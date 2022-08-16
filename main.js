@@ -1,5 +1,8 @@
 const express = require('express')
 const app = express()
+const mongoose = require('mongoose')
+require("dotenv").config();
+
 
 const bodyParser = require('body-parser')
 
@@ -9,6 +12,15 @@ const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(express.json())
 
+//mongoose connection 
+
+mongoose.connect(process.env.MONGO_URL)
+.then(()=>{
+    console.log("connected to the database");
+})
+.catch(err=>{
+    console.log(`failed to connect`+err);
+})
 
 
 app.use(require('./routes/userRoutes'))
