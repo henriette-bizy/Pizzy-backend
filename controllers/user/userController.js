@@ -1,151 +1,191 @@
 const { valid } = require("joi");
-const {User,UserValidation} = require ("../../models/users/user")
-const hashPassword  = require('../../utils/hashPassword')
-const isValidObjectId = require('../../utils/formatResult')
+const { User, UserValidation } = require("../../models/users/user");
+const hashPassword = require("../../utils/hashPassword");
+const { validateObjectId, formatResult } = require("../../utils/formatResult");
 
 
-exports.getContent =  async (req,res)=>{
-    try{
-    const bodyy = await req.body;
-    res.send(bodyy);
-    console.log("it's us babby")
-}
-catch(err){
-    res.send(err.details);
-}
+//creating the new user
+exports.createUser = async (req, res) => {
+  try {
+    const body = req.body;
 
-}
+    const { error } = UserValidation(body);
+    if (error) {
+      return res.send(formatResult({ status: 400, message: error }));
+    }
 
+    //checking the duplicate problem
+    const duplicateEmail = await User.findOne({ userEmail: body.userEmail });
+    if (duplicateEmail) {
+      res.send(formatResult({ status: 400, message: "User already exist" }));
+    }
 
-
-//for creating the new user
-exports.createUser = async (req,res)=>{
-   
-try{
-
- const{error} = UserValidation(req.body)
- if(error) 
- return res.status(400).send(error.details)
-
- 
-
-const user = req.body;
-
-//checking the duplicate email
-const duplicateEmail = await User.findOne({userEmail:"hopebiziyaremye@gmail.com"})
-console.log(duplicateEmail);
-
-if(duplicateEmail){
-    res.send({
-        status:403,
-        message:"user already exist"
-    }).status(403)
-
-    console.log("we already in this block beyibi");
-    console.log(user);
-}
-else{
-try{
-    let newUser = new User(user)
-    console.log(newUser);
+    let newUser = new User(body);
+    
 
     //question codes slash bugs
-    const hashedPasswsord = await hashPassword(newUser.userPassword)
+    const hashedPasswsord = await hashPassword(newUser.userPassword);
     newUser.userPassword = hashedPasswsord;
-    console.log(newUser)
-    await newUser.save()
-    res.send(newUser);
-    res.status(201).send("use created succesffuly")
-}catch(err){
-    return res.send(err.details).status(400)
-}
-}
-}catch(err){
-    res.send(err.details).status(400)
-}
-}
-
-
-
-//getting all the users
-exports.getAllUsers = async(req,res)=>{
-    try{
-    const users = await User.find()
-     console.log(users)
-    return res.send(users).status(200)
-}catch(err){
-    res.send(err.details).status(400);
-}
-}
-
-exports.getUser = async(req,res)=>{
-    try{
-     const user = User.findByOne({_id:req.params.id})
- 
-     if(!user){
-        return res.send("User not found").status(404);
-     }
-
-     return res.send(user).status(200)
-    }
-    catch(err){
-        res.send(err.details)
-    }
-}
-
-exports.updateUser = async(req,res)=>{
-
-    try{
-        const{error} = UserValidation(req.body)
-        if(error) 
-        return res.status(400).send(error.details)
-       
-
-        //finding the user
-        const user = await User.findOne({
-            _id: req.params.id
-        }) 
-        if(!user){
-            return res.send("User not found").status(404);
-        }
-
-        const duplicateEmail = await User.findOne({
-            _id: {
-                $ne: req.params.id
-            },
-            userEmail: req.body.email
-        })
-        if(duplicateEmail)
-           return res.status(403).send("user with this email already exists");
-
     
-        const updatedUser = await User.findOneAndUpdate({_id:req.params.id},req.body)
-        
+    await newUser.save();
+    res.send(
+      formatResult({ status: 201, message: "succesfful created", data: body })
+    );
+  } catch (error) {
+    // res.send(formatResult({status:500, message:error}));
+    res.send(formatResult({ status: 500, message: error }));
+  }
+};
 
-        return res.send(updatedUser).status(200)
+//gettting all users
+exports.getAllUsers = async (req, res) => {
+  try {
+    let {limit,page } = req.query;
+    if (!page) page = 1;
+    if (!limit) limit = 10;
 
+    if (page < 1)
+      return res.send(
+        formatResult({
+          status: 400,
+          message: "Page query must be greater than 0",
+        })
+      );
 
+    const options = {
+      page: page,
+      limit: limit,
+    };
+
+    const users = await User.paginate({}, options);
+    res.send(
+      formatResult({
+        data: users,
+      })
+    );
+  } catch (err) {
+    res.send(formatResult({ status: 500, message: err }));
+  }
+};
+
+//getting a user
+exports.getUser = async (req, res) => {
+  try {
+    let { id } = req.params;
+
+    if (!validateObjectId(id))
+      return res.send(formatResult({ status: 204, message: "Invalid id" }));
+
+    const user = await User.findOne({ _id: id });
+    
+
+    if (!user) {
+      return res.send(formatResult({ status: 404, message: "User not found" }));
     }
 
-catch(err){
-res.send(err.details).status(400)
-}
-}
+    return res.send(
+      formatResult({ status: 200, message: "sucess", data: user })
+    );
+  } catch (err) {
+    res.send(formatResult({ status: 400, message: "bad request", data: err }));
+  }
+};
 
-exports.deleteUser = async (req,res) =>{
-    try{
+//updating  a usedr
+exports.updateUser = async (req, res) => {
+  try {
+    let { id } = req.params;
+    const body = req.body;
 
-        if (!isValidObjectId(req.params.id))
-        return res.send("invalid email");
-
-
-        const user = await User.findOneAndDelete({_id:req.params.id})
-
-        if(!user)
-          return res.send("user not found").status(404)
-
-       return res.send(updatedUser).status(200)
-    }catch(err){
-        res.send(err.details)
+    if (!validateObjectId(id)) {
+      res.send(
+        formatResult({
+          status: 204,
+          message: "Invalid id",
+        })
+      );
     }
-}
+
+    const { error } = UserValidation(req.body);
+    if (error) return res.send(formatResult({ status: 400, message: error }));
+
+    //finding the user
+    const user = await User.findOne({ _id: id });
+    if (!user) {
+      return res.send(formatResult({ status: 404, message: "user not found" }));
+    }
+
+    const duplicateEmail = await User.findOne({
+      _id: {
+        $ne: req.params.id,
+      },
+      userEmail: req.body.userEmail,
+    });
+
+    console.log(duplicateEmail);
+
+    if (duplicateEmail)
+      return res.send(
+        formatResult({
+          status: 400,
+          message: "user with this email already exists",
+        })
+      );
+
+    const updatedUser = await User.findOneAndUpdate({ _id: id }, body);
+
+    return res.send(
+      formatResult({
+        status: 201,
+        message: "User updated successfully",
+        data: updatedUser,
+      })
+    );
+  } catch (error) {
+    res.send(
+      formatResult({ status: 400, message: "bad request", data: error })
+    );
+  }
+};
+
+//deleting a user
+exports.deleteUser = async (req, res) => {
+  try {
+    let { id } = req.params;
+
+    const user = await User.findOneAndDelete({ _id: id });
+
+    if (!user) return res.send("user not found").status(404);
+
+    return res.send(
+      formatResult({
+        status: 200,
+        message: "user deleted succesffuly",
+        data: user,
+      })
+    );
+  } catch (error) {
+    res.send(formatResult({ status: 400, message: error }));
+  }
+};
+
+//deleting all users
+exports.deleteAllUsers = async (req, res) => {
+  const users = await User.deleteMany();
+  if (!users) {
+    res.send(
+      formatResult({
+        status: 400,
+        message: "Bad request",
+      })
+    );
+  }
+
+  res.send(
+    formatResult({
+      status: 200,
+      message: "Deleted the whole thingy",
+      data: users,
+    })
+  );
+};

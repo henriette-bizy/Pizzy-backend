@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 /**
  * One Day in Milliseconds
  * @type {number}

@@ -23,6 +23,12 @@ mongoose.connect(process.env.MONGO_URL)
 })
 
 
+
+
+app.get('/',(req,res)=>{
+    res.send("****************Welcome on Pizzy backend****************")
+})
+
 app.use(require('./routes/userRoutes'))
 
 const port = 4000;

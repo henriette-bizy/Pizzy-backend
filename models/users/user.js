@@ -1,6 +1,7 @@
 const  Joi = require("joi")
 const { default: mongoose } = require("mongoose")
 const jwt = require("jsonwebtoken");
+const paginate = require('mongoose-paginate-v2')
 
 const UserSchema = new mongoose.Schema({
 
@@ -26,8 +27,7 @@ isAdmin:{
 }},
 {timestamps:true});
 
-
-Joi.string();
+UserSchema.plugin(paginate)
 
 //validatin the user
 exports.UserValidation = (user)=>{
