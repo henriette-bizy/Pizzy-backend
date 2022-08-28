@@ -1,0 +1,5 @@
+{
+    "name": "Node js Pizzy app",
+    "my_jwtPrivateKey": "124",
+    "app_port": 4000
+}

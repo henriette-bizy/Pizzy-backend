@@ -25,3 +25,4 @@ const mongoose = require('mongoose');
          data: data
      }
  }
+ 

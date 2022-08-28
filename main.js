@@ -1,4 +1,5 @@
 const express = require('express')
+const config = require('config');
 const app = express()
 const mongoose = require('mongoose')
 require("dotenv").config();
@@ -11,6 +12,7 @@ const bodyParser = require('body-parser')
 
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(express.json())
+
 
 //mongoose connection 
 
