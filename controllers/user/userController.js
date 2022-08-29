@@ -78,27 +78,29 @@ exports.getUser = async (req, res) => {
   
   let {id} = req.params
   
-  const {error} = Joi.string().max(80).min(3).validate(id);
-  if(error)
-  return res.send(error.message)
+  // const {error} =validateParams(id);
+  // if(error)
+  // return res.send(formatResult({status:400, message:error.message}))
+
+  
 
      
 
-      // if(err)
-        // return res.send(formatResult({status:800, message:err, data:err}))
-  //   if (!validateObjectId(id))
-  //     return res.send(formatResult({ status: 204, message: "Invalid id"}));
+      if(err)
+        return res.send(formatResult({status:800, message:err, data:err}))
+    if (!validateObjectId(id))
+      return res.send(formatResult({ status: 204, message: "Invalid id"}));
 
-  //   const user = await User.findOne({ _id: id });
+    const user = await User.findOne({ _id: id });
     
 
-  //   if (!user) {
-  //     return res.send(formatResult({ status: 404, message: "User not found" }));
-  //   }
+    if (!user) {
+      return res.send(formatResult({ status: 404, message: "User not found" }));
+    }
 
-  //   return res.send(
-  //     formatResult({ status: 200, message: "sucess", data: user })
-  //   );
+    return res.send(
+      formatResult({ status: 200, message: "sucess", data: user })
+    );
   } catch (error) {
     res.send(error).status(400);
   }

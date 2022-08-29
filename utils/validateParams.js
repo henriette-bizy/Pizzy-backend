@@ -1,11 +1,14 @@
 const Joi = require('joi')
 
 const validateParams = (requestParams) =>{
-    const validateParams = Joi.object({
-        requestParams:Joi.string().max(80).min(1)
-    })
+    let isValid = true;
+    
+    const {error} =  Joi.string().length(25).min(3).validate(requestParams);
+    if(error)
+      isValid= false;
 
-    return validateParams.validate(requestParams)
+
+    return isValid,error.message;
 }
 
 module.export = validateParams;

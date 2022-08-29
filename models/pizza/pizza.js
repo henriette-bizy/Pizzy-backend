@@ -1,8 +1,7 @@
 const  Joi = require("joi")
-const { default: mongoose } = require("mongoose")
-const jwt = require("jsonwebtoken");
+const  {mongoose } = require("mongoose")
 
-const UserSchema = new mongoose.Schema({
+const PizzaSchema = new mongoose.Schema({
 
 PizzaName:{
     type:String,
@@ -10,39 +9,44 @@ PizzaName:{
     required:true
     
 },
+PizzaIngredients:{
+    type:String,
+    maxlength:100,
+    required:true
 
-PizzaDimensions:{
+},
+PizzaPrice:{
     type:String,
     maxlength:250,
     required:true
 },
-userPassword:{
+PizzaImage:{
     type:String,
     maxlength:250,
-:true
-},  
-isAdmin:{
-    type:Boolean,
-    required:true
-}},
+    require:true
+
+},
+PizzaDimension:{
+    type:String,
+    maxlength:250,
+},
+},
 {timestamps:true});
 
 
-Joi.string();
+
 
 //validatin the user
-exports.UserValidation = (user)=>{
+exports.PizzaValidation = (pizza)=>{
     const schema = Joi.object({
-        userNames:Joi.string(),
-        userEmail:Joi.string(),
-        userPassword:Joi.string().max(50),
-        isAdmin:Joi.required(),
+        PizzaName:Joi.string(),
+        PizzaIngredients:Joi.string(),
+        PizzaPrice:Joi.string().max(50),
+        PizzaImage:Joi.required(),
     })
-    return schema.validate(user);
+    return schema.validate(pizza);
 }
+const Pizza = mongoose.model("Pizza", PizzaSchema)
 
 
-
-
-
-exports.User = User;
+exports.Pizza = Pizza;
