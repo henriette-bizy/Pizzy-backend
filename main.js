@@ -33,7 +33,6 @@ mongoose.connect(process.env.MONGO_URL)
 app.get('/',(req,res)=>{
     res.send("****************Welcome on Pizzy backend****************")
 })
-
 // app.use('/users/',userRoutes)
 app.use(pizzaRoutes)
 
