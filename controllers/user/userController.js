@@ -1,7 +1,8 @@
-const { valid } = require("joi");
-const { User, UserValidation } = require("../../models/users/user");
+const Joi = require("joi");
+const { User, UserValidation , validateParams } = require("../../models/users/user");
 const hashPassword = require("../../utils/hashPassword");
 const { validateObjectId, formatResult } = require("../../utils/formatResult");
+
 
 
 //creating the new user
@@ -68,13 +69,27 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
+
+
+
 //getting a user
 exports.getUser = async (req, res) => {
   try {
-    let { id } = req.params;
+  
+  let {id} = req.params
+  
+  // const {error} =validateParams(id);
+  // if(error)
+  // return res.send(formatResult({status:400, message:error.message}))
 
+  
+
+     
+
+      if(err)
+        return res.send(formatResult({status:800, message:err, data:err}))
     if (!validateObjectId(id))
-      return res.send(formatResult({ status: 204, message: "Invalid id" }));
+      return res.send(formatResult({ status: 204, message: "Invalid id"}));
 
     const user = await User.findOne({ _id: id });
     
@@ -86,10 +101,11 @@ exports.getUser = async (req, res) => {
     return res.send(
       formatResult({ status: 200, message: "sucess", data: user })
     );
-  } catch (err) {
-    res.send(formatResult({ status: 400, message: "bad request", data: err }));
+  } catch (error) {
+    res.send(error).status(400);
   }
-};
+  // this is to let you know that id was deprecated in the object
+}
 
 //updating  a usedr
 exports.updateUser = async (req, res) => {
@@ -97,14 +113,17 @@ exports.updateUser = async (req, res) => {
     let { id } = req.params;
     const body = req.body;
 
-    if (!validateObjectId(id)) {
-      res.send(
-        formatResult({
-          status: 204,
-          message: "Invalid id",
-        })
-      );
-    }
+    // if (!validateObjectId(id)) {
+    //   res.send(
+    //     formatResult({
+    //       status: 204,
+    //       message: "Invalid id",
+    //     })
+    //   );
+    // }
+
+    const {err} = validateObjectId(id);
+    if(err) return res.send(formatResult({status:201, message:"Invalid id ", data:err}))
 
     const { error } = UserValidation(req.body);
     if (error) return res.send(formatResult({ status: 400, message: error }));
@@ -122,7 +141,7 @@ exports.updateUser = async (req, res) => {
       userEmail: req.body.userEmail,
     });
 
-    console.log(duplicateEmail);
+
 
     if (duplicateEmail)
       return res.send(
@@ -188,4 +207,6 @@ exports.deleteAllUsers = async (req, res) => {
       data: users,
     })
   );
-};
+  }
+
+

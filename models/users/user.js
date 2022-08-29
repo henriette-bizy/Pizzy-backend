@@ -1,7 +1,9 @@
 const  Joi = require("joi")
 const { default: mongoose } = require("mongoose")
 const jwt = require("jsonwebtoken");
+const { ONE_DAY } = require('../../utils/formatResult')
 const paginate = require('mongoose-paginate-v2')
+require('dotenv').config()
 
 const UserSchema = new mongoose.Schema({
 
@@ -29,7 +31,7 @@ isAdmin:{
 
 UserSchema.plugin(paginate)
 
-//validatin the user
+//validating the user
 exports.UserValidation = (user)=>{
     const schema = Joi.object({
         userNames:Joi.string(),
@@ -41,7 +43,6 @@ exports.UserValidation = (user)=>{
 }
 
 
-
 //generating the token
 UserSchema.methods.generateAuthToken = ()=>{
     const token = jwt.sign({
@@ -49,20 +50,34 @@ UserSchema.methods.generateAuthToken = ()=>{
         userNames:this.userNames,
         userEmail:this.userEmail,
         isAdmin:this.isAdmin
-    },config.get('jwtPrivateKey'))
+    }, process.env.KEY, {
+        expiresIn: ONE_DAY
+    })
     return token;
+}
+
+
+exports.validateParams = (requestParams) =>{
+    const validateParams = Joi.object({
+        requestParams:Joi.string().max(80).min(1).required()
+    })
+
+    return validateParams.validate(requestParams)
 }
 
 
 
 //login validating
-exports.logInValidtion = (user)=>{
+exports.logInValidating = (user)=>{
     const validateLogin = Joi.object({
-        email:Joi.string().email().max(255).min(4).required(),
-        password:Joi.string().max(255).min(3).required()
+        userEmail:Joi.string().email().max(255).min(4).required(),
+        userPassword:Joi.string().max(255).min(3).required()
     })
-    return validateLogin.validate(body);
+    return validateLogin.validate(user);
 }
+
+
+
 
 const User = mongoose.model("User",UserSchema);
 
