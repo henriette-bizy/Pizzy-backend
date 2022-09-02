@@ -18,7 +18,7 @@ const mongoose = require('mongoose');
   * @param data
   * @returns {{data: *, message: string, status: number}}
   */
- exports.formatResult = ({ status = 200, message = 'OK', data }) => {
+ exports.formatResult = ( status = 200, message = 'OK', data ) => {
      return {
          status: status,
          message: message.toString().split('\"').join(''),

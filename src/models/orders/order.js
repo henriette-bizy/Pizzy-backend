@@ -11,13 +11,13 @@ orderStatus:{
     
 },
 orderCustomerId:{
-    type:mongoose.Schema.Types.ObjectId,
+    type:mongoose.Schema.ObjectId,
     ref:"User",
     require:true
 
 },
 orderItemId:{
-    type:mongoose.Schema.Types.ObjectId,
+    type:mongoose.Schema.ObjectId,
     ref:"Pizza",
     require:true
 },

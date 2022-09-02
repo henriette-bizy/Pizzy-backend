@@ -1,24 +1,24 @@
 const  Joi = require("joi")
-const  {mongoose } = require("mongoose")
+const { default: mongoose } = require("mongoose")
 
 const PizzaSchema = new mongoose.Schema({
 
 PizzaName:{
     type:String,
     maxlength:250,
-    required:true
+    require:true
     
 },
 PizzaIngredients:{
     type:String,
     maxlength:100,
-    required:true
+    require:true
 
 },
 PizzaPrice:{
     type:String,
     maxlength:250,
-    required:true
+    require:true
 },
 PizzaImage:{
     type:String,
@@ -40,13 +40,14 @@ PizzaDimension:{
 exports.PizzaValidation = (pizza)=>{
     const schema = Joi.object({
         PizzaName:Joi.string(),
-        PizzaIngredients:Joi.string(),
+        PizzaIngredients:Joi.string().required(),
         PizzaPrice:Joi.string().max(50),
-        PizzaImage:Joi.required(),
+        PizzaImage:Joi.string().required(),
+        PizzaDimension:Joi.string()
     })
     return schema.validate(pizza);
 }
-const Pizza = mongoose.model("Pizza", PizzaSchema)
 
+const Pizza = mongoose.model("Pizza", PizzaSchema)
 
 exports.Pizza = Pizza;

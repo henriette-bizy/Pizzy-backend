@@ -10,22 +10,22 @@ const UserSchema = new mongoose.Schema({
 userNames:{
     type:String,
     maxlength:250,
-    required:true
+    require:true
 },
 
 userEmail:{
     type:String,
     maxlength:250,
-    required:true
+    require:true
 },
 userPassword:{
     type:String,
     maxlength:250,
-    required:true
+    require:true
 },
 isAdmin:{
     type:Boolean,
-    required:true
+    require:true
 }},
 {timestamps:true});
 

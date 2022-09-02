@@ -7,7 +7,6 @@ const login  = async (req,res) =>{
     try{
         
         const body =req.body;
-        console.log(body);
         const {error} = logInValidating(body);
 
         if(error){
@@ -31,7 +30,7 @@ const login  = async (req,res) =>{
 
         const validPassword = await bcrypt.compare(req.body.userPassword, user.userPassword)
         
-          console.log(validPassword)
+          
           if(!validPassword){
             return res.send(formatResult({
                 status:401,

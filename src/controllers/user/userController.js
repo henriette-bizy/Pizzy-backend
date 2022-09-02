@@ -1,4 +1,3 @@
-const Joi = require("joi");
 const { User, UserValidation , validateParams } = require("../../models/users/user");
 const hashPassword = require("../../utils/hashPassword");
 const { validateObjectId, formatResult } = require("../../utils/formatResult");

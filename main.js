@@ -3,9 +3,9 @@ const config = require('config');
 const app = express()
 const mongoose = require('mongoose')
 require("dotenv").config();
-const {auth} = require('./middlewares/authentication')
-const {pizzaRoutes}  = require('./routes/pizzaRoutes')
-const {userRoutes} = require('./routes/userRoutes')
+
+const pizzaRoutes  = require('./src/routes/pizzaRoutes')
+const userRoutes = require('./src/routes/userRoutes')
 
 
 const bodyParser = require('body-parser')
@@ -33,7 +33,7 @@ mongoose.connect(process.env.MONGO_URL)
 app.get('/',(req,res)=>{
     res.send("****************Welcome on Pizzy backend****************")
 })
-// app.use('/users/',userRoutes)
+app.use(userRoutes)
 app.use(pizzaRoutes)
 
 
