@@ -26,7 +26,6 @@ orderItemSize:{
     type:String,
     maxlength:250,
     require:true
-
 }
 },
 {timestamps:true});

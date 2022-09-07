@@ -6,6 +6,7 @@ require("dotenv").config();
 
 const pizzaRoutes  = require('./src/routes/pizzaRoutes')
 const userRoutes = require('./src/routes/userRoutes')
+const orderRoutes = require('./src/routes/orderRoutes')
 
 
 const bodyParser = require('body-parser')
@@ -35,6 +36,7 @@ app.get('/',(req,res)=>{
 })
 app.use(userRoutes)
 app.use(pizzaRoutes)
+app.use(orderRoutes)
 
 
 const port = 4000;
