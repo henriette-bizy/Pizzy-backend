@@ -1,0 +1,89 @@
+{
+    "swagger":"2.0",
+     "info": {
+        "title": "Pizzy",
+        "version": "1.0.0",
+        "description": "Online Pizza delivering application"
+    },
+    "schemes": ["http"],
+    "host": "localhost:4000",
+    "basePath": "/",
+    "securityDefinitions": {
+        "bearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "scheme": "bearer",
+            "in": "header"
+        }
+    },
+
+
+   "paths": {
+        "/users": {
+          "get": {
+            "tags": ["Users"],
+            "summary": "Get all users in system",
+            "responses": {
+              "200": {
+                "description": "OK",
+                "schema": {
+                  "$ref": "#/models/users/users"
+                }
+              }
+            }
+          }
+        },
+
+        "/addUser": {
+            "post": {
+              "tags": ["Users"],
+              "description": "Create new user in pizzy application",
+              "parameters": [
+                {
+                  "name": "user",
+                  "in": "body",
+                  "description": "User that we want to create",
+                  "schema": {
+                    "$ref": "#/models/users/users"
+                  }
+                }
+              ],
+              "produces": ["application/json"],
+              "responses": {
+                "200": {
+                  "description": "New user is created",
+                  "schema": {
+                    "$ref": "#/models/users/users"
+                  }
+                }
+              }
+            }
+          },
+      
+      "definitions": {
+        "User": {
+          "required": ["userNames", "userEmail", "userPassword","userPassword", "isAdmin"],
+          "properties": {
+
+            "isAdmin": {
+              "type": "boolean"
+            },
+            "userNames": {
+              "type": "string"
+            },
+            "userEmail":{
+                "type":"string"
+            },
+            "userPassword":{
+                "type":"string"
+            }
+          }
+        },
+        "Users": {
+          "type": "array",
+          "$ref": "#/models/users/users"
+        }
+      }
+    }
+}
+

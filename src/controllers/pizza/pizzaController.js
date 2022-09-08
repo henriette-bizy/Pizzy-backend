@@ -80,6 +80,30 @@ exports.getPizza = async (req, res) => {
   }
   // this is to let you know that id was deprecated in the object
 }
+exports.deletePizza = async (req, res) => {
+  try {
+  
+  let {id} = req.params
+   console.log(id);
+      
+    if (!validateObjectId(id))
+      return res.send(formatResult({ status: 204, message: "Invalid id"}));
+
+    const pizza = await Pizza.findOneAndDelete({_id:id})
+    
+
+    if (!pizza) {
+      return res.send(formatResult({ status: 404, message: "pizza not found" }));
+    }
+
+    return res.send(
+      formatResult({ status: 200, message: "deleted the pizza", data: pizza })
+    );
+  } catch (error) {
+    res.send(formatResult({status:"500", message:error.message}))
+  }
+  // this is to let you know that id was deprecated in the object
+}
 
 exports.updatePizza =  async (req,res) =>{
   try {

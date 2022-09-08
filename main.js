@@ -3,15 +3,12 @@ const config = require('config');
 const app = express()
 const mongoose = require('mongoose')
 require("dotenv").config();
-
 const pizzaRoutes  = require('./src/routes/pizzaRoutes')
 const userRoutes = require('./src/routes/userRoutes')
 const orderRoutes = require('./src/routes/orderRoutes')
-
-
 const bodyParser = require('body-parser')
-
-
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocumentation  = require('./swagger.json');
 
 
 app.use(bodyParser.urlencoded({extended:true}))
@@ -29,15 +26,13 @@ mongoose.connect(process.env.MONGO_URL)
 })
 
 
-
-
 app.get('/',(req,res)=>{
     res.send("****************Welcome on Pizzy backend****************")
 })
 app.use(userRoutes)
 app.use(pizzaRoutes)
 app.use(orderRoutes)
-
+app.use('/pizzy-docs',swaggerUi.serve, swaggerUi.setup(swaggerDocumentation))
 
 const port = 4000;
 app.listen(port, ()=>{

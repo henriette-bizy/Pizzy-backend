@@ -80,13 +80,6 @@ exports.getUser = async (req, res) => {
   // const {error} =validateParams(id);
   // if(error)
   // return res.send(formatResult({status:400, message:error.message}))
-
-  
-
-     
-
-      if(err)
-        return res.send(formatResult({status:800, message:err, data:err}))
     if (!validateObjectId(id))
       return res.send(formatResult({ status: 204, message: "Invalid id"}));
 
