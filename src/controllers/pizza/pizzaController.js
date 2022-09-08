@@ -17,16 +17,23 @@ exports.createPizza = async (req, res) => {
       );
     }
 
-    let newPizza = new Pizza(body);
+    let duplicatePizza = await Pizza.findOne({PizzaName:body.PizzaName})
 
+
+    if(duplicatePizza){
+     return res.send(formatResult({status:400, message:"Pizza already registered"}))
+    }
+
+    let newPizza = new Pizza(body);
     await newPizza.save();
-    res.send(
+    return res.send(
       formatResult({
         status: 201,
         message: "new pizza created",
         data: newPizza,
       })
     );
+   
   } catch (error) {
     res.send(formatResult({ status: 400, message: error }));
   }
@@ -99,4 +106,21 @@ exports.updatePizza =  async (req,res) =>{
     } catch (error) {
       res.send(formatResult({status:"500", message:error.message}))
     }
+}
+
+exports.deleteAllPizzas = async (req,res)=>{
+
+  try{
+  
+  const pizzas = await Pizza.deleteMany()
+  if(!pizzas){
+    return res.send(formatResult({status:400, message:"Bad request"}))
+  }
+ 
+
+  return res.send(formatResult({status:200, message:"Successfully deleted whole pizzas"}))
+
+  }catch(error){
+res.send(formatResult({status:500, message:"Internal server error",data:error.message}))
+  }
 }

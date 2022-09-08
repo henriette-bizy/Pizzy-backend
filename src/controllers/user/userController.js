@@ -17,7 +17,7 @@ exports.createUser = async (req, res) => {
     //checking the duplicate problem
     const duplicateEmail = await User.findOne({ userEmail: body.userEmail });
     if (duplicateEmail) {
-      res.send(formatResult({ status: 400, message: "User already exist" }));
+     return res.send(formatResult({ status: 400, message: "User already exist" }));
     }
 
     let newUser = new User(body);

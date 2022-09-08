@@ -1,4 +1,5 @@
 const  Joi = require("joi")
+const paginate = require('mongoose-paginate-v2')
 const { default: mongoose } = require("mongoose")
 
 
@@ -32,7 +33,7 @@ orderItemSize:{
 
 
 
-
+OrderSchema.plugin(paginate)
 //validatin the user
 exports.OrderValidation = (order)=>{
     const schema = Joi.object({
