@@ -13,12 +13,11 @@ const login  = async (req,res) =>{
           return res.send(formatResult(
                 {
                     status:400,
-                    message:error
+                    message:error.message 
 
                 }
             ))
         }
-
 
         let user = await User.findOne({userEmail:req.body.userEmail})
         
@@ -46,10 +45,10 @@ const login  = async (req,res) =>{
 
           }))
 
-    }catch(err){
+    }catch(error){
         res.send(formatResult({
-             status:400,
-             message:err
+             status:700,
+             message:error.details
         }))
     }
 }

@@ -60,7 +60,9 @@ exports.getAllUsers = async (req, res) => {
     const users = await User.paginate({}, options);
     res.send(
       formatResult({
+        status:200,
         data: users,
+        message:"successfully retrieved all users"
       })
     );
   } catch (err) {
@@ -96,6 +98,8 @@ exports.getUser = async (req, res) => {
   } catch (error) {
     res.send(error).status(400);
   }
+
+  //what is this 
   // this is to let you know that id was deprecated in the object
 }
 
