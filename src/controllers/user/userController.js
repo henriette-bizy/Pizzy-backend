@@ -62,7 +62,7 @@ exports.getAllUsers = async (req, res) => {
       formatResult({
         status:200,
         data: users,
-        message:"successfully retrieved all users"
+        message:"successfully retrieved all users"  
       })
     );
   } catch (err) {

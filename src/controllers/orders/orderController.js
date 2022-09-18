@@ -106,3 +106,10 @@ exports.deleteAllOrders = async (req, res) => {
     );
   }
 };
+exports.deleteOrder = async (req,res)=>{
+  try{
+
+  }catch(error){
+    res.send(formatResult({status:500, message:"internal server error",data:error.details}))
+  }
+}
