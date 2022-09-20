@@ -108,6 +108,14 @@ exports.deleteAllOrders = async (req, res) => {
 };
 exports.deleteOrder = async (req,res)=>{
   try{
+    
+    let {id} = req.params;
+    let order = await Order.findOneAndDelete({_id:id});
+
+    if(!order){
+      res.send(formatResult({status:404,message:"Order is not found"}))
+    }
+    res.send(formatResult({status:400, message:"bad request"}))
 
   }catch(error){
     res.send(formatResult({status:500, message:"internal server error",data:error.details}))
